@@ -17,7 +17,7 @@ function Home() {
            <NavbarCustom />
           <Welcome />
           <Cards setCard_props={setCard_props} />
-          <Betting Card_props={Card_props} />
+          <Betting Card_props={Card_props} setCard_props={setCard_props}/>
           
           
           <Footer />

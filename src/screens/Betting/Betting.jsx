@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState,useEffect } from "react";
 import { Card, Container, Row, Form, Col, Button } from "react-bootstrap";
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
@@ -6,27 +6,28 @@ import { toast } from 'react-toastify';
 import { contract, abi, tokenAddress, tokeAbi } from '../../utilies/constant'
 import Web3 from 'web3'
 import { loadWeb3 } from '../../apis/api'
-import Spinner  from "../../Components/Spinner_here/Spinner";
-function Betting({ Card_props }) {
+import Spinner from "../../Components/Spinner_here/Spinner";
+function Betting({ Card_props,setCard_props}) {
 
 
 
     let getdata = useRef()
     const [buttonState, setButtonState] = useState(false)
-    const [button, setButton] = useState("Bet Now!")
+    const [InputData, setInputData] = useState("")
     const [value, setValue] = useState("")
     const [mybalance, setMybalance] = useState("")
-    let [IsLoading,setIsLoading]=useState(false)
+    let [IsLoading, setIsLoading] = useState(false)
 
 
 
-
+    let bet_getdata 
 
     const Bet_Amount = async () => {
         try {
             let acc = await loadWeb3();
-            let bet_getdata = getdata.current.value;
+             bet_getdata = getdata.current.value;
             // getdata=parseInt(getdata)
+            
 
             if (acc === "No Wallet") {
                 toast.error("Not Connected to Wallet")
@@ -50,19 +51,21 @@ function Betting({ Card_props }) {
                     await tokenapp.methods.approve(contract, web3.utils.toWei(bet_getdata)).send({
                         from: acc
                     })
-                   
+
                     toast.success("Token Approve Successful.");
-                    
+
 
                     await contractAcc.methods.Bet_Amount(web3.utils.toWei(bet_getdata)).send({
                         from: acc
                     })
+                  
+                    bet_getdata = getdata.current.value=""
                     setIsLoading(false)
                     toast.success("Bet Successful");
 
                 }
                 else {
-                    toast.error("Invalid Ammount");
+                    toast.error("Invalid Amount");
                 }
 
 
@@ -71,6 +74,9 @@ function Betting({ Card_props }) {
 
             }
         } catch (error) {
+            bet_getdata = getdata.current.value=""
+            setIsLoading(false)
+
             console.log("Error while Bet Amount ", error);
 
 
@@ -96,24 +102,36 @@ function Betting({ Card_props }) {
             else if (acc === "Wrong Network") {
                 toast.error("Wrong Newtwork please connect to test net")
             }
+      
 
             else {
+             
 
 
                 const web3 = window.web3;
                 let tokenapp = new web3.eth.Contract(tokeAbi, tokenAddress)
                 let contractAcc = new web3.eth.Contract(abi, contract)
 
-                setIsLoading(true)
+                bet_getdata = getdata.current.value=""
+
+                if (Card_props.length == 0){
+
+                    toast.error("Plese Select Card");
+                } else {
+                   setIsLoading(true)
 
                 await contractAcc.methods.withdraw(Card_props).send({
                     from: acc
                 })
                 toast.success("Withdraw Successful");
                 setIsLoading(false)
-
+                setCard_props(0)
+                   
+                }
             }
         } catch (error) {
+            bet_getdata = getdata.current.value=""
+            setIsLoading(false)
             console.log("Error while not withdraw ", error);
 
 
@@ -123,10 +141,23 @@ function Betting({ Card_props }) {
 
 
     }
+    const balanceOf = async () => {
+        let acc = await loadWeb3();
+        const web3 = window.web3;
+        let tokenBalane = new web3.eth.Contract(tokeAbi, tokenAddress)
+        let Balance_here = await tokenBalane.methods.balanceOf(acc).call();
+        tokenBalane = web3.utils.fromWei(Balance_here);
+        
+        setMybalance(parseInt(tokenBalane) )
+
+
+    }
 
 
 
-
+useEffect(() => {
+    balanceOf()
+}, [1000])
 
 
 
@@ -141,7 +172,7 @@ function Betting({ Card_props }) {
 
         <section class="how-section padding-top padding-bottom bg_img bg_img2">
             {
-               IsLoading && <Spinner/> 
+                IsLoading && <Spinner />
             }
             <div class="container">
                 <div class="profile-edit-wrapper">
@@ -183,14 +214,15 @@ function Betting({ Card_props }) {
                                             </div>
 
                                             <div class="form-group center">
-                                                <label class="form-label" for="about">WHE Coin</label>
+                                                <label class="form-label" for="about">WHE Coin</label><br />
+                                                <label class="form-label " style={{fontWeight:'700'}}  for="about">{mybalance}</label>
 
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
-                                                <label class="form-label" for="about">*Min bet 1 Coin, Max bet 40,000 Coin</label>
+                                                <label class="form-label" for="about">*Min bet 1 Coin, Max bet 40,000 Coin </label>
 
                                             </div>
                                         </div>
