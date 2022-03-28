@@ -30,11 +30,11 @@ function Betting({ Card_props,setCard_props}) {
             
 
             if (acc === "No Wallet") {
-                toast.error("Not Connected to Wallet")
+                console.error("Not Connected to Wallet")
 
             }
             else if (acc === "Wrong Network") {
-                toast.error("Wrong Newtwork please connect to test net")
+                console.error("Wrong Newtwork please connect to test net")
             }
 
             else {

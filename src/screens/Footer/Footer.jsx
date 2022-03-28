@@ -21,7 +21,7 @@ export default function Footer(props) {
         <div class="container">
             <div class="footer-wrapper d-flex flex-wrap justify-content-center align-items-center text-center">
 
-                <p class="copyright text-white">© Copyright WheSwap 2022 &nbsp;<a href="https://bscscan.com/address/0x17e17d5620ae04e17876221e2ba98c4e9a0dd4cd"style={{color: '#fff' , fontweight: 'bold'}}>Smart Contract <i class="fa fa-hand-o-left" aria-hidden="true"></i></a></p>
+                <p class="copyright text-white">© Copyright WheSwap 2022 &nbsp;<a href="https://bscscan.com/address/0xc70f6bB6936501Eb281e8516b361ad92bA90E77A#code"style={{color: '#fff' , fontweight: 'bold'}}>Smart Contract <i class="fa fa-hand-o-left" aria-hidden="true"></i></a></p>
             </div>
         </div>
     </div>
